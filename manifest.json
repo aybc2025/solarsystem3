@@ -1,0 +1,64 @@
+{
+  "name": "מערכת השמש - סימולציה תלת-ממדית",
+  "short_name": "מערכת השמש",
+  "description": "סימולציה אינטראקטיבית תלת-ממדית של מערכת השמש עם מידע מפורט על כל כוכב לכת",
+  "start_url": "/",
+  "display": "standalone",
+  "background_color": "#000033",
+  "theme_color": "#000033",
+  "orientation": "any",
+  "categories": ["education", "science"],
+  "icons": [
+    {
+      "src": "icon-192.png",
+      "sizes": "192x192",
+      "type": "image/png",
+      "purpose": "any maskable"
+    },
+    {
+      "src": "icon-512.png",
+      "sizes": "512x512",
+      "type": "image/png",
+      "purpose": "any maskable"
+    }
+  ],
+  "screenshots": [
+    {
+      "src": "screenshot1.png",
+      "sizes": "1280x720",
+      "type": "image/png",
+      "label": "תצוגה ראשית של מערכת השמש"
+    },
+    {
+      "src": "screenshot2.png",
+      "sizes": "1280x720",
+      "type": "image/png",
+      "label": "מידע מפורט על כוכב לכת"
+    }
+  ],
+  "share_target": {
+    "action": "/",
+    "method": "GET",
+    "params": {
+      "title": "title",
+      "text": "text",
+      "url": "url"
+    }
+  },
+  "shortcuts": [
+    {
+      "name": "השמש",
+      "short_name": "השמש",
+      "description": "מידע על השמש",
+      "url": "/?view=sun",
+      "icons": [{"src": "sun-icon.png", "sizes": "96x96"}]
+    },
+    {
+      "name": "כדור הארץ",
+      "short_name": "כדור הארץ",
+      "description": "מידע על כדור הארץ",
+      "url": "/?view=earth",
+      "icons": [{"src": "earth-icon.png", "sizes": "96x96"}]
+    }
+  ]
+}
