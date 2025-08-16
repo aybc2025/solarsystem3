@@ -1,9 +1,9 @@
 // Service Worker for Solar System PWA
 const CACHE_NAME = 'solar-system-v1';
 const urlsToCache = [
-  '/',
-  '/index.html',
-  '/manifest.json',
+  '/solarsystem3/',
+  '/solarsystem3/index.html',
+  '/solarsystem3/manifest.json',
   'https://cdnjs.cloudflare.com/ajax/libs/three.js/r128/three.min.js'
 ];
 
