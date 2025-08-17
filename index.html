@@ -696,7 +696,7 @@
             mouse = new THREE.Vector2();
             
             // Lighting
-            const ambientLight = new THREE.AmbientLight(0x202040, 0.25);
+            const ambientLight = new THREE.AmbientLight(0x404080, 0.8); // הרבה יותר בהיר!
             scene.add(ambientLight);
             
             const sunLight = new THREE.PointLight(0xffffff, 3, 500);
@@ -852,22 +852,22 @@
 }
 
 function createMercuryTexture(ctx, size) {
-    // רקע אפור-חום בסיסי
+    // רקע בהיר יותר
     const gradient = ctx.createRadialGradient(size/2, size/2, 0, size/2, size/2, size/2);
-    gradient.addColorStop(0, '#9B8873');
-    gradient.addColorStop(0.5, '#8C7853');
-    gradient.addColorStop(1, '#705548');
+    gradient.addColorStop(0, '#D4C4A8'); // בהיר יותר
+    gradient.addColorStop(0.5, '#C8B896'); // בהיר יותר
+    gradient.addColorStop(1, '#A68B5B'); // בהיר יותר
     ctx.fillStyle = gradient;
     ctx.fillRect(0, 0, size, size);
     
-    // מכתשים
-    for (let i = 0; i < 100; i++) {
+    // מכתשים בהירים יותר
+    for (let i = 0; i < 80; i++) { // פחות מכתשים
         const x = Math.random() * size;
         const y = Math.random() * size;
-        const radius = Math.random() * 15 + 3;
+        const radius = Math.random() * 12 + 2;
         const craterGradient = ctx.createRadialGradient(x, y, 0, x, y, radius);
-        craterGradient.addColorStop(0, '#555555');
-        craterGradient.addColorStop(1, '#777777');
+        craterGradient.addColorStop(0, '#888888'); // בהיר יותר
+        craterGradient.addColorStop(1, '#AAAAAA'); // בהיר יותר
         ctx.fillStyle = craterGradient;
         ctx.beginPath();
         ctx.arc(x, y, radius, 0, Math.PI * 2);
@@ -876,65 +876,73 @@ function createMercuryTexture(ctx, size) {
 }
 
 function createVenusTexture(ctx, size) {
-    // רקע צהוב-כתום כמו בתמונה
+    // רקע בהיר ויפה
     const gradient = ctx.createLinearGradient(0, 0, size, size);
-    gradient.addColorStop(0, '#FFD873');
-    gradient.addColorStop(0.3, '#FFC649');
-    gradient.addColorStop(0.7, '#FFE4A3');
-    gradient.addColorStop(1, '#FFA726');
+    gradient.addColorStop(0, '#FFE4A3'); // בהיר יותר
+    gradient.addColorStop(0.3, '#FFD873'); 
+    gradient.addColorStop(0.7, '#FFF0B8'); // בהיר יותר
+    gradient.addColorStop(1, '#FFCC80'); // בהיר יותר
     ctx.fillStyle = gradient;
     ctx.fillRect(0, 0, size, size);
     
-    // עננים ומערבולות
-    for (let i = 0; i < 50; i++) {
+    // עננים בהירים
+    for (let i = 0; i < 40; i++) {
         const x = Math.random() * size;
         const y = Math.random() * size;
-        const cloudSize = Math.random() * 40 + 20;
+        const cloudSize = Math.random() * 35 + 15;
         const cloudGradient = ctx.createRadialGradient(x, y, 0, x, y, cloudSize);
-        cloudGradient.addColorStop(0, 'rgba(255, 255, 255, 0.3)');
-        cloudGradient.addColorStop(1, 'rgba(255, 200, 100, 0.1)');
+        cloudGradient.addColorStop(0, 'rgba(255, 255, 255, 0.5)'); // בהיר יותר
+        cloudGradient.addColorStop(1, 'rgba(255, 230, 150, 0.2)'); // בהיר יותר
         ctx.fillStyle = cloudGradient;
         ctx.beginPath();
         ctx.arc(x, y, cloudSize, 0, Math.PI * 2);
         ctx.fill();
     }
     
-    // קווי אטמוספירה
-    ctx.strokeStyle = 'rgba(255, 255, 255, 0.2)';
-    ctx.lineWidth = 2;
-    for (let i = 0; i < 20; i++) {
+    // קווי אטמוספירה בהירים
+    ctx.strokeStyle = 'rgba(255, 255, 255, 0.4)'; // בהיר יותר
+    ctx.lineWidth = 1;
+    for (let i = 0; i < 15; i++) {
         ctx.beginPath();
-        ctx.moveTo(0, i * size / 20);
-        ctx.quadraticCurveTo(size/2, i * size / 20 + Math.sin(i) * 30, size, i * size / 20);
+        ctx.moveTo(0, i * size / 15);
+        ctx.quadraticCurveTo(size/2, i * size / 15 + Math.sin(i) * 20, size, i * size / 15);
         ctx.stroke();
     }
 }
 
 function createEarthTexture(ctx, size) {
-    // אוקיינוס כחול
-    ctx.fillStyle = '#2233FF';
+    // אוקיינוס כחול בהיר
+    ctx.fillStyle = '#4466FF'; // בהיר יותר
     ctx.fillRect(0, 0, size, size);
     
-    // יבשות ירוקות-חומות
+    // יבשות ירוקות בהירות
     const continents = [
         {x: size*0.2, y: size*0.3, w: size*0.3, h: size*0.4},
         {x: size*0.6, y: size*0.2, w: size*0.25, h: size*0.5},
         {x: size*0.1, y: size*0.7, w: size*0.4, h: size*0.2}
     ];
     
-    ctx.fillStyle = '#1a5f1a';
+    ctx.fillStyle = '#2E8B2E'; // ירוק בהיר יותר
     continents.forEach(continent => {
         ctx.beginPath();
         ctx.ellipse(continent.x, continent.y, continent.w/2, continent.h/2, 0, 0, Math.PI * 2);
         ctx.fill();
     });
     
-    // עננים לבנים
-    ctx.fillStyle = 'rgba(255, 255, 255, 0.6)';
-    for (let i = 0; i < 30; i++) {
+    // הוספת חומים לחופים
+    ctx.fillStyle = '#DEB887';
+    continents.forEach(continent => {
+        ctx.beginPath();
+        ctx.ellipse(continent.x, continent.y, continent.w/2.5, continent.h/2.5, 0, 0, Math.PI * 2);
+        ctx.fill();
+    });
+    
+    // עננים בהירים
+    ctx.fillStyle = 'rgba(255, 255, 255, 0.8)'; // בהיר יותר
+    for (let i = 0; i < 25; i++) {
         const x = Math.random() * size;
         const y = Math.random() * size;
-        const cloudSize = Math.random() * 25 + 10;
+        const cloudSize = Math.random() * 20 + 8;
         ctx.beginPath();
         ctx.arc(x, y, cloudSize, 0, Math.PI * 2);
         ctx.fill();
@@ -942,46 +950,46 @@ function createEarthTexture(ctx, size) {
 }
 
 function createMarsTexture(ctx, size) {
-    // רקע אדום-כתום
+    // רקע אדום בהיר
     const gradient = ctx.createRadialGradient(size/2, size/2, 0, size/2, size/2, size/2);
-    gradient.addColorStop(0, '#FF6347');
-    gradient.addColorStop(0.5, '#FF4500');
-    gradient.addColorStop(1, '#CD3700');
+    gradient.addColorStop(0, '#FF7F50'); // בהיר יותר
+    gradient.addColorStop(0.5, '#FF6347');
+    gradient.addColorStop(1, '#E55B3C'); // בהיר יותר
     ctx.fillStyle = gradient;
     ctx.fillRect(0, 0, size, size);
     
-    // כתמים כהים (קניונים)
-    ctx.fillStyle = 'rgba(139, 69, 19, 0.7)';
-    for (let i = 0; i < 20; i++) {
+    // כתמים כהים פחות כהים
+    ctx.fillStyle = 'rgba(139, 69, 19, 0.4)'; // שקוף יותר
+    for (let i = 0; i < 15; i++) {
         const x = Math.random() * size;
         const y = Math.random() * size;
-        const w = Math.random() * 60 + 20;
-        const h = Math.random() * 20 + 5;
+        const w = Math.random() * 50 + 15;
+        const h = Math.random() * 15 + 3;
         ctx.fillRect(x, y, w, h);
     }
     
-    // קטב צפוני לבן
-    ctx.fillStyle = 'rgba(255, 255, 255, 0.8)';
+    // קטב צפוני לבן בהיר
+    ctx.fillStyle = 'rgba(255, 255, 255, 0.9)';
     ctx.beginPath();
     ctx.arc(size/2, size*0.1, size*0.08, 0, Math.PI * 2);
     ctx.fill();
 }
-
+        
 function createJupiterTexture(ctx, size) {
-    // פסים של צדק
-    const stripes = ['#C88B3A', '#B8860B', '#D2691E', '#F4A460', '#DEB887'];
+    // פסים בהירים של צדק
+    const stripes = ['#E6B85C', '#DAA520', '#F4A460', '#FFE4B5', '#F5DEB3']; // בהיר יותר
     const stripeHeight = size / stripes.length;
     
     for (let i = 0; i < stripes.length; i++) {
         ctx.fillStyle = stripes[i];
         ctx.fillRect(0, i * stripeHeight, size, stripeHeight);
         
-        // הוספת גלים לפסים
+        // גלים בהירים
         ctx.strokeStyle = stripes[i === 0 ? stripes.length - 1 : i - 1];
-        ctx.lineWidth = 3;
+        ctx.lineWidth = 2;
         ctx.beginPath();
         for (let x = 0; x <= size; x += 5) {
-            const waveHeight = Math.sin(x * 0.02 + i) * 10;
+            const waveHeight = Math.sin(x * 0.02 + i) * 8;
             const y = i * stripeHeight + stripeHeight/2 + waveHeight;
             if (x === 0) ctx.moveTo(x, y);
             else ctx.lineTo(x, y);
@@ -989,22 +997,22 @@ function createJupiterTexture(ctx, size) {
         ctx.stroke();
     }
     
-    // הכתם האדום הגדול
+    // הכתם האדום הגדול בהיר
     const spotX = size * 0.7;
     const spotY = size * 0.4;
-    const spotGradient = ctx.createRadialGradient(spotX, spotY, 0, spotX, spotY, 40);
-    spotGradient.addColorStop(0, '#FF6B47');
-    spotGradient.addColorStop(0.5, '#FF4500');
-    spotGradient.addColorStop(1, '#CD3700');
+    const spotGradient = ctx.createRadialGradient(spotX, spotY, 0, spotX, spotY, 35);
+    spotGradient.addColorStop(0, '#FF8C69'); // בהיר יותר
+    spotGradient.addColorStop(0.5, '#FF6347');
+    spotGradient.addColorStop(1, '#FF4500');
     ctx.fillStyle = spotGradient;
     ctx.beginPath();
-    ctx.ellipse(spotX, spotY, 35, 25, 0, 0, Math.PI * 2);
+    ctx.ellipse(spotX, spotY, 30, 20, 0, 0, Math.PI * 2);
     ctx.fill();
 }
 
 function createSaturnTexture(ctx, size) {
-    // פסים דומים לצדק אבל בצבעים בהירים יותר
-    const stripes = ['#FAD5A5', '#FFE4B5', '#F5DEB3', '#FFEBCD', '#FFF8DC'];
+    // פסים בהירים מאוד
+    const stripes = ['#FFFACD', '#FFEBCD', '#F5DEB3', '#FFE4B5', '#FFEFD5']; // בהיר מאוד
     const stripeHeight = size / stripes.length;
     
     for (let i = 0; i < stripes.length; i++) {
@@ -1012,11 +1020,11 @@ function createSaturnTexture(ctx, size) {
         ctx.fillRect(0, i * stripeHeight, size, stripeHeight);
         
         // גלים עדינים
-        ctx.strokeStyle = 'rgba(0, 0, 0, 0.1)';
+        ctx.strokeStyle = 'rgba(0, 0, 0, 0.05)'; // עדין מאוד
         ctx.lineWidth = 1;
         ctx.beginPath();
         for (let x = 0; x <= size; x += 5) {
-            const waveHeight = Math.sin(x * 0.03 + i) * 5;
+            const waveHeight = Math.sin(x * 0.03 + i) * 3;
             const y = i * stripeHeight + stripeHeight/2 + waveHeight;
             if (x === 0) ctx.moveTo(x, y);
             else ctx.lineTo(x, y);
@@ -1024,40 +1032,40 @@ function createSaturnTexture(ctx, size) {
         ctx.stroke();
     }
 }
-
+        
 function createUranusTexture(ctx, size) {
-    // כחול-ירוק חלק
+    // כחול-ירוק בהיר
     const gradient = ctx.createRadialGradient(size/2, size/2, 0, size/2, size/2, size/2);
-    gradient.addColorStop(0, '#5FE0F7');
+    gradient.addColorStop(0, '#87CEEB'); // בהיר יותר
     gradient.addColorStop(1, '#4FD0E7');
     ctx.fillStyle = gradient;
     ctx.fillRect(0, 0, size, size);
     
-    // פסים עדינים
-    ctx.strokeStyle = 'rgba(255, 255, 255, 0.1)';
-    ctx.lineWidth = 2;
-    for (let i = 0; i < 10; i++) {
+    // פסים בהירים
+    ctx.strokeStyle = 'rgba(255, 255, 255, 0.2)'; // בהיר יותר
+    ctx.lineWidth = 1;
+    for (let i = 0; i < 8; i++) {
         ctx.beginPath();
-        ctx.moveTo(0, i * size / 10);
-        ctx.lineTo(size, i * size / 10);
+        ctx.moveTo(0, i * size / 8);
+        ctx.lineTo(size, i * size / 8);
         ctx.stroke();
     }
 }
 
 function createNeptuneTexture(ctx, size) {
-    // כחול כהה
+    // כחול בהיר יותר
     const gradient = ctx.createRadialGradient(size/2, size/2, 0, size/2, size/2, size/2);
-    gradient.addColorStop(0, '#4B70DD');
-    gradient.addColorStop(1, '#3A5FCD');
+    gradient.addColorStop(0, '#6495ED'); // בהיר יותר
+    gradient.addColorStop(1, '#4169E1'); // בהיר יותר
     ctx.fillStyle = gradient;
     ctx.fillRect(0, 0, size, size);
     
-    // כתמים לסופות
-    ctx.fillStyle = 'rgba(100, 100, 255, 0.3)';
-    for (let i = 0; i < 10; i++) {
+    // כתמים בהירים לסופות
+    ctx.fillStyle = 'rgba(135, 206, 235, 0.4)'; // בהיר יותר
+    for (let i = 0; i < 8; i++) {
         const x = Math.random() * size;
         const y = Math.random() * size;
-        const stormSize = Math.random() * 30 + 10;
+        const stormSize = Math.random() * 25 + 8;
         ctx.beginPath();
         ctx.arc(x, y, stormSize, 0, Math.PI * 2);
         ctx.fill();
@@ -1081,12 +1089,14 @@ function createGenericTexture(ctx, size, color) {
             texture.wrapT = THREE.RepeatWrapping;
             
             const planetMat = new THREE.MeshPhongMaterial({
-                map: texture,
-                shininess: data.name === 'כדור הארץ' ? 70 : 30,
-                specular: data.name === 'כדור הארץ' ? 0x111155 : 0x222222,
-                bumpMap: texture,
-                bumpScale: 0.05
-            });
+            map: texture,
+            shininess: data.name === 'כדור הארץ' ? 70 : 30,
+            specular: data.name === 'כדור הארץ' ? 0x111155 : 0x222222,
+            bumpMap: texture,
+            bumpScale: 0.05,
+            emissive: new THREE.Color(0x111111), // תאורה עצמית עדינה
+            emissiveIntensity: 0.1 // עוצמה נמוכה
+        });
             
             const planetMesh = new THREE.Mesh(planetGeom, planetMat);
             planetMesh.castShadow = true;
