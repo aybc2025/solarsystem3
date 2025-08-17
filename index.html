@@ -810,26 +810,283 @@
             
             scene.add(sunGroup);
         }
+
+        function createPlanetTexture(data) {
+    const canvas = document.createElement('canvas');
+    const ctx = canvas.getContext('2d');
+    const size = 512;
+    canvas.width = size;
+    canvas.height = size;
+    
+    // יצירת טקסטורה לפי סוג הכוכב
+    switch(data.name) {
+        case 'כוכב חמה':
+            createMercuryTexture(ctx, size);
+            break;
+        case 'נוגה':
+            createVenusTexture(ctx, size);
+            break;
+        case 'כדור הארץ':
+            createEarthTexture(ctx, size);
+            break;
+        case 'מאדים':
+            createMarsTexture(ctx, size);
+            break;
+        case 'צדק':
+            createJupiterTexture(ctx, size);
+            break;
+        case 'שבתאי':
+            createSaturnTexture(ctx, size);
+            break;
+        case 'אורנוס':
+            createUranusTexture(ctx, size);
+            break;
+        case 'נפטון':
+            createNeptuneTexture(ctx, size);
+            break;
+        default:
+            createGenericTexture(ctx, size, data.textureColors[0]);
+    }
+    
+    return new THREE.CanvasTexture(canvas);
+}
+
+function createMercuryTexture(ctx, size) {
+    // רקע אפור-חום בסיסי
+    const gradient = ctx.createRadialGradient(size/2, size/2, 0, size/2, size/2, size/2);
+    gradient.addColorStop(0, '#9B8873');
+    gradient.addColorStop(0.5, '#8C7853');
+    gradient.addColorStop(1, '#705548');
+    ctx.fillStyle = gradient;
+    ctx.fillRect(0, 0, size, size);
+    
+    // מכתשים
+    for (let i = 0; i < 100; i++) {
+        const x = Math.random() * size;
+        const y = Math.random() * size;
+        const radius = Math.random() * 15 + 3;
+        const craterGradient = ctx.createRadialGradient(x, y, 0, x, y, radius);
+        craterGradient.addColorStop(0, '#555555');
+        craterGradient.addColorStop(1, '#777777');
+        ctx.fillStyle = craterGradient;
+        ctx.beginPath();
+        ctx.arc(x, y, radius, 0, Math.PI * 2);
+        ctx.fill();
+    }
+}
+
+function createVenusTexture(ctx, size) {
+    // רקע צהוב-כתום כמו בתמונה
+    const gradient = ctx.createLinearGradient(0, 0, size, size);
+    gradient.addColorStop(0, '#FFD873');
+    gradient.addColorStop(0.3, '#FFC649');
+    gradient.addColorStop(0.7, '#FFE4A3');
+    gradient.addColorStop(1, '#FFA726');
+    ctx.fillStyle = gradient;
+    ctx.fillRect(0, 0, size, size);
+    
+    // עננים ומערבולות
+    for (let i = 0; i < 50; i++) {
+        const x = Math.random() * size;
+        const y = Math.random() * size;
+        const cloudSize = Math.random() * 40 + 20;
+        const cloudGradient = ctx.createRadialGradient(x, y, 0, x, y, cloudSize);
+        cloudGradient.addColorStop(0, 'rgba(255, 255, 255, 0.3)');
+        cloudGradient.addColorStop(1, 'rgba(255, 200, 100, 0.1)');
+        ctx.fillStyle = cloudGradient;
+        ctx.beginPath();
+        ctx.arc(x, y, cloudSize, 0, Math.PI * 2);
+        ctx.fill();
+    }
+    
+    // קווי אטמוספירה
+    ctx.strokeStyle = 'rgba(255, 255, 255, 0.2)';
+    ctx.lineWidth = 2;
+    for (let i = 0; i < 20; i++) {
+        ctx.beginPath();
+        ctx.moveTo(0, i * size / 20);
+        ctx.quadraticCurveTo(size/2, i * size / 20 + Math.sin(i) * 30, size, i * size / 20);
+        ctx.stroke();
+    }
+}
+
+function createEarthTexture(ctx, size) {
+    // אוקיינוס כחול
+    ctx.fillStyle = '#2233FF';
+    ctx.fillRect(0, 0, size, size);
+    
+    // יבשות ירוקות-חומות
+    const continents = [
+        {x: size*0.2, y: size*0.3, w: size*0.3, h: size*0.4},
+        {x: size*0.6, y: size*0.2, w: size*0.25, h: size*0.5},
+        {x: size*0.1, y: size*0.7, w: size*0.4, h: size*0.2}
+    ];
+    
+    ctx.fillStyle = '#1a5f1a';
+    continents.forEach(continent => {
+        ctx.beginPath();
+        ctx.ellipse(continent.x, continent.y, continent.w/2, continent.h/2, 0, 0, Math.PI * 2);
+        ctx.fill();
+    });
+    
+    // עננים לבנים
+    ctx.fillStyle = 'rgba(255, 255, 255, 0.6)';
+    for (let i = 0; i < 30; i++) {
+        const x = Math.random() * size;
+        const y = Math.random() * size;
+        const cloudSize = Math.random() * 25 + 10;
+        ctx.beginPath();
+        ctx.arc(x, y, cloudSize, 0, Math.PI * 2);
+        ctx.fill();
+    }
+}
+
+function createMarsTexture(ctx, size) {
+    // רקע אדום-כתום
+    const gradient = ctx.createRadialGradient(size/2, size/2, 0, size/2, size/2, size/2);
+    gradient.addColorStop(0, '#FF6347');
+    gradient.addColorStop(0.5, '#FF4500');
+    gradient.addColorStop(1, '#CD3700');
+    ctx.fillStyle = gradient;
+    ctx.fillRect(0, 0, size, size);
+    
+    // כתמים כהים (קניונים)
+    ctx.fillStyle = 'rgba(139, 69, 19, 0.7)';
+    for (let i = 0; i < 20; i++) {
+        const x = Math.random() * size;
+        const y = Math.random() * size;
+        const w = Math.random() * 60 + 20;
+        const h = Math.random() * 20 + 5;
+        ctx.fillRect(x, y, w, h);
+    }
+    
+    // קטב צפוני לבן
+    ctx.fillStyle = 'rgba(255, 255, 255, 0.8)';
+    ctx.beginPath();
+    ctx.arc(size/2, size*0.1, size*0.08, 0, Math.PI * 2);
+    ctx.fill();
+}
+
+function createJupiterTexture(ctx, size) {
+    // פסים של צדק
+    const stripes = ['#C88B3A', '#B8860B', '#D2691E', '#F4A460', '#DEB887'];
+    const stripeHeight = size / stripes.length;
+    
+    for (let i = 0; i < stripes.length; i++) {
+        ctx.fillStyle = stripes[i];
+        ctx.fillRect(0, i * stripeHeight, size, stripeHeight);
+        
+        // הוספת גלים לפסים
+        ctx.strokeStyle = stripes[i === 0 ? stripes.length - 1 : i - 1];
+        ctx.lineWidth = 3;
+        ctx.beginPath();
+        for (let x = 0; x <= size; x += 5) {
+            const waveHeight = Math.sin(x * 0.02 + i) * 10;
+            const y = i * stripeHeight + stripeHeight/2 + waveHeight;
+            if (x === 0) ctx.moveTo(x, y);
+            else ctx.lineTo(x, y);
+        }
+        ctx.stroke();
+    }
+    
+    // הכתם האדום הגדול
+    const spotX = size * 0.7;
+    const spotY = size * 0.4;
+    const spotGradient = ctx.createRadialGradient(spotX, spotY, 0, spotX, spotY, 40);
+    spotGradient.addColorStop(0, '#FF6B47');
+    spotGradient.addColorStop(0.5, '#FF4500');
+    spotGradient.addColorStop(1, '#CD3700');
+    ctx.fillStyle = spotGradient;
+    ctx.beginPath();
+    ctx.ellipse(spotX, spotY, 35, 25, 0, 0, Math.PI * 2);
+    ctx.fill();
+}
+
+function createSaturnTexture(ctx, size) {
+    // פסים דומים לצדק אבל בצבעים בהירים יותר
+    const stripes = ['#FAD5A5', '#FFE4B5', '#F5DEB3', '#FFEBCD', '#FFF8DC'];
+    const stripeHeight = size / stripes.length;
+    
+    for (let i = 0; i < stripes.length; i++) {
+        ctx.fillStyle = stripes[i];
+        ctx.fillRect(0, i * stripeHeight, size, stripeHeight);
+        
+        // גלים עדינים
+        ctx.strokeStyle = 'rgba(0, 0, 0, 0.1)';
+        ctx.lineWidth = 1;
+        ctx.beginPath();
+        for (let x = 0; x <= size; x += 5) {
+            const waveHeight = Math.sin(x * 0.03 + i) * 5;
+            const y = i * stripeHeight + stripeHeight/2 + waveHeight;
+            if (x === 0) ctx.moveTo(x, y);
+            else ctx.lineTo(x, y);
+        }
+        ctx.stroke();
+    }
+}
+
+function createUranusTexture(ctx, size) {
+    // כחול-ירוק חלק
+    const gradient = ctx.createRadialGradient(size/2, size/2, 0, size/2, size/2, size/2);
+    gradient.addColorStop(0, '#5FE0F7');
+    gradient.addColorStop(1, '#4FD0E7');
+    ctx.fillStyle = gradient;
+    ctx.fillRect(0, 0, size, size);
+    
+    // פסים עדינים
+    ctx.strokeStyle = 'rgba(255, 255, 255, 0.1)';
+    ctx.lineWidth = 2;
+    for (let i = 0; i < 10; i++) {
+        ctx.beginPath();
+        ctx.moveTo(0, i * size / 10);
+        ctx.lineTo(size, i * size / 10);
+        ctx.stroke();
+    }
+}
+
+function createNeptuneTexture(ctx, size) {
+    // כחול כהה
+    const gradient = ctx.createRadialGradient(size/2, size/2, 0, size/2, size/2, size/2);
+    gradient.addColorStop(0, '#4B70DD');
+    gradient.addColorStop(1, '#3A5FCD');
+    ctx.fillStyle = gradient;
+    ctx.fillRect(0, 0, size, size);
+    
+    // כתמים לסופות
+    ctx.fillStyle = 'rgba(100, 100, 255, 0.3)';
+    for (let i = 0; i < 10; i++) {
+        const x = Math.random() * size;
+        const y = Math.random() * size;
+        const stormSize = Math.random() * 30 + 10;
+        ctx.beginPath();
+        ctx.arc(x, y, stormSize, 0, Math.PI * 2);
+        ctx.fill();
+    }
+}
+
+function createGenericTexture(ctx, size, color) {
+    ctx.fillStyle = color;
+    ctx.fillRect(0, 0, size, size);
+}
+
         
         function createPlanet(data) {
             const planetGroup = new THREE.Group();
             
             const planetGeom = new THREE.SphereGeometry(data.radius, 64, 64);
             
-            let planetMat;
-            if (data.hasStripes) {
-                planetMat = new THREE.MeshPhongMaterial({
-                    color: data.textureColors[0],
-                    shininess: 30,
-                    specular: 0x222222
-                });
-            } else {
-                planetMat = new THREE.MeshPhongMaterial({
-                    color: data.textureColors[0],
-                    shininess: data.name === 'כדור הארץ' ? 70 : 30,
-                    specular: data.name === 'כדור הארץ' ? 0x111155 : 0x222222
-                });
-            }
+                        // יצירת טקסטורה מותאמת אישית
+            const texture = createPlanetTexture(data);
+            texture.wrapS = THREE.RepeatWrapping;
+            texture.wrapT = THREE.RepeatWrapping;
+            
+            const planetMat = new THREE.MeshPhongMaterial({
+                map: texture,
+                shininess: data.name === 'כדור הארץ' ? 70 : 30,
+                specular: data.name === 'כדור הארץ' ? 0x111155 : 0x222222,
+                bumpMap: texture,
+                bumpScale: 0.05
+            });
             
             const planetMesh = new THREE.Mesh(planetGeom, planetMat);
             planetMesh.castShadow = true;
