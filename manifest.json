@@ -2,7 +2,7 @@
   "name": "מערכת השמש - סימולציה תלת-ממדית",
   "short_name": "מערכת השמש",
   "description": "סימולציה אינטראקטיבית תלת-ממדית של מערכת השמש עם מידע מפורט על כל כוכב לכת",
-  "start_url": "/solarsystem 3/",
+  "start_url": "/solarsystem3/",
   "display": "standalone",
   "background_color": "#000033",
   "theme_color": "#000033",
