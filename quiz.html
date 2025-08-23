@@ -1,0 +1,1031 @@
+<!DOCTYPE html>
+<html lang="he" dir="rtl">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>חידון מערכת השמש 🌌</title>
+    <style>
+        * { margin: 0; padding: 0; box-sizing: border-box; }
+        
+        body {
+            font-family: 'Segoe UI', Arial, sans-serif;
+            background: radial-gradient(ellipse at center, #0a0a2e 0%, #000000 100%);
+            color: white;
+            min-height: 100vh;
+            overflow-x: hidden;
+        }
+        
+        .stars {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            pointer-events: none;
+            z-index: 1;
+        }
+        
+        .star {
+            position: absolute;
+            background: white;
+            border-radius: 50%;
+            animation: twinkle 3s infinite;
+        }
+        
+        @keyframes twinkle {
+            0%, 100% { opacity: 0.3; }
+            50% { opacity: 1; }
+        }
+        
+        .container {
+            position: relative;
+            z-index: 10;
+            max-width: 900px;
+            margin: 0 auto;
+            padding: 20px;
+        }
+        
+        .header {
+            text-align: center;
+            margin-bottom: 40px;
+            background: linear-gradient(135deg, rgba(0,0,0,0.8) 0%, rgba(10,10,46,0.6) 100%);
+            padding: 30px;
+            border-radius: 20px;
+            backdrop-filter: blur(20px);
+            border: 1px solid rgba(100,100,255,0.3);
+            box-shadow: 0 8px 32px rgba(0,0,0,0.5);
+        }
+        
+        .header h1 {
+            font-size: 2.5em;
+            background: linear-gradient(135deg, #667eea 0%, #f093fb 100%);
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            margin-bottom: 10px;
+            text-shadow: 0 0 30px rgba(102,126,234,0.5);
+        }
+        
+        .score-board {
+            display: flex;
+            justify-content: space-around;
+            margin: 20px 0;
+            flex-wrap: wrap;
+            gap: 15px;
+        }
+        
+        .score-item {
+            background: linear-gradient(135deg, rgba(102,126,234,0.3) 0%, rgba(118,75,162,0.3) 100%);
+            padding: 15px 25px;
+            border-radius: 15px;
+            text-align: center;
+            border: 1px solid rgba(100,100,255,0.3);
+            min-width: 120px;
+        }
+        
+        .score-value {
+            font-size: 1.5em;
+            font-weight: bold;
+            color: #f093fb;
+        }
+        
+        .score-label {
+            font-size: 0.9em;
+            color: #b8b8ff;
+            margin-top: 5px;
+        }
+        
+        .quiz-container {
+            background: linear-gradient(135deg, rgba(0,0,0,0.9) 0%, rgba(10,10,46,0.8) 100%);
+            border-radius: 20px;
+            padding: 40px;
+            backdrop-filter: blur(20px);
+            border: 1px solid rgba(100,100,255,0.3);
+            box-shadow: 0 8px 32px rgba(0,0,0,0.5);
+            margin-bottom: 30px;
+        }
+        
+        .quiz-start, .quiz-end {
+            text-align: center;
+        }
+        
+        .difficulty-selector {
+            margin: 30px 0;
+        }
+        
+        .difficulty-btn {
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            color: white;
+            border: none;
+            padding: 15px 30px;
+            margin: 10px;
+            border-radius: 15px;
+            cursor: pointer;
+            font-size: 1.1em;
+            transition: all 0.3s;
+            box-shadow: 0 4px 15px rgba(102,126,234,0.3);
+        }
+        
+        .difficulty-btn:hover {
+            transform: translateY(-3px) scale(1.05);
+            box-shadow: 0 8px 25px rgba(102,126,234,0.5);
+        }
+        
+        .difficulty-btn.easy { background: linear-gradient(135deg, #4CAF50 0%, #45a049 100%); }
+        .difficulty-btn.medium { background: linear-gradient(135deg, #FF9800 0%, #F57C00 100%); }
+        .difficulty-btn.hard { background: linear-gradient(135deg, #f44336 0%, #d32f2f 100%); }
+        
+        .question-container {
+            display: none;
+        }
+        
+        .question-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 30px;
+            flex-wrap: wrap;
+            gap: 15px;
+        }
+        
+        .question-number {
+            font-size: 1.2em;
+            color: #667eea;
+            font-weight: bold;
+        }
+        
+        .timer {
+            background: linear-gradient(135deg, #ff6b6b 0%, #ee5a24 100%);
+            padding: 10px 20px;
+            border-radius: 25px;
+            font-weight: bold;
+            box-shadow: 0 4px 15px rgba(255,107,107,0.3);
+        }
+        
+        .progress-bar {
+            width: 100%;
+            height: 8px;
+            background: rgba(255,255,255,0.1);
+            border-radius: 4px;
+            overflow: hidden;
+            margin: 20px 0;
+        }
+        
+        .progress-fill {
+            height: 100%;
+            background: linear-gradient(135deg, #667eea 0%, #f093fb 100%);
+            transition: width 0.3s ease;
+            border-radius: 4px;
+        }
+        
+        .question-text {
+            font-size: 1.4em;
+            line-height: 1.6;
+            margin-bottom: 30px;
+            text-align: center;
+            color: #f0f0f0;
+        }
+        
+        .answers-grid {
+            display: grid;
+            gap: 15px;
+            margin-bottom: 30px;
+        }
+        
+        .answer-btn {
+            background: linear-gradient(135deg, rgba(255,255,255,0.1) 0%, rgba(255,255,255,0.05) 100%);
+            color: white;
+            border: 2px solid rgba(100,100,255,0.3);
+            padding: 20px;
+            border-radius: 15px;
+            cursor: pointer;
+            font-size: 1.1em;
+            transition: all 0.3s;
+            text-align: right;
+            backdrop-filter: blur(10px);
+        }
+        
+        .answer-btn:hover {
+            background: linear-gradient(135deg, rgba(102,126,234,0.3) 0%, rgba(118,75,162,0.3) 100%);
+            transform: translateY(-2px);
+            box-shadow: 0 8px 25px rgba(102,126,234,0.3);
+        }
+        
+        .answer-btn.selected {
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            border-color: #f093fb;
+        }
+        
+        .answer-btn.correct {
+            background: linear-gradient(135deg, #4CAF50 0%, #45a049 100%);
+            border-color: #66BB6A;
+        }
+        
+        .answer-btn.incorrect {
+            background: linear-gradient(135deg, #f44336 0%, #d32f2f 100%);
+            border-color: #EF5350;
+        }
+        
+        .next-btn, .restart-btn {
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            color: white;
+            border: none;
+            padding: 15px 40px;
+            border-radius: 15px;
+            cursor: pointer;
+            font-size: 1.2em;
+            margin: 20px auto;
+            display: block;
+            transition: all 0.3s;
+            box-shadow: 0 4px 15px rgba(102,126,234,0.3);
+        }
+        
+        .exit-btn {
+            background: linear-gradient(135deg, #ff6b6b 0%, #ee5a24 100%);
+            color: white;
+            border: none;
+            padding: 8px 15px;
+            border-radius: 10px;
+            cursor: pointer;
+            font-size: 0.9em;
+            transition: all 0.3s;
+            box-shadow: 0 4px 15px rgba(255,107,107,0.3);
+        }
+        
+        .exit-btn:hover {
+            transform: translateY(-2px) scale(1.05);
+            box-shadow: 0 8px 25px rgba(255,107,107,0.5);
+        }
+        
+        .next-btn:hover, .restart-btn:hover {
+            transform: translateY(-2px) scale(1.05);
+            box-shadow: 0 8px 25px rgba(102,126,234,0.5);
+        }
+        
+        .explanation {
+            background: linear-gradient(135deg, rgba(255,215,0,0.1) 0%, rgba(255,193,7,0.1) 100%);
+            padding: 20px;
+            border-radius: 15px;
+            margin: 20px 0;
+            border: 1px solid rgba(255,215,0,0.3);
+            display: none;
+        }
+        
+        .explanation h4 {
+            color: #FFD700;
+            margin-bottom: 10px;
+        }
+        
+        .final-score {
+            text-align: center;
+            padding: 40px;
+        }
+        
+        .final-score-value {
+            font-size: 4em;
+            font-weight: bold;
+            background: linear-gradient(135deg, #667eea 0%, #f093fb 100%);
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            margin: 20px 0;
+        }
+        
+        .performance-message {
+            font-size: 1.3em;
+            margin: 20px 0;
+            padding: 20px;
+            border-radius: 15px;
+        }
+        
+        .excellent { background: linear-gradient(135deg, rgba(76,175,80,0.2) 0%, rgba(69,160,73,0.2) 100%); }
+        .good { background: linear-gradient(135deg, rgba(255,152,0,0.2) 0%, rgba(245,124,0,0.2) 100%); }
+        .needs-improvement { background: linear-gradient(135deg, rgba(244,67,54,0.2) 0%, rgba(211,47,47,0.2) 100%); }
+        
+        .statistics {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+            gap: 20px;
+            margin: 30px 0;
+        }
+        
+        .stat-item {
+            background: linear-gradient(135deg, rgba(102,126,234,0.2) 0%, rgba(118,75,162,0.2) 100%);
+            padding: 20px;
+            border-radius: 15px;
+            text-align: center;
+            border: 1px solid rgba(100,100,255,0.3);
+        }
+        
+        .planet-emoji {
+            font-size: 2em;
+            margin: 0 10px;
+        }
+        
+        @media (max-width: 768px) {
+            .container {
+                padding: 10px;
+            }
+            
+            .header h1 {
+                font-size: 2em;
+            }
+            
+            .quiz-container {
+                padding: 20px;
+            }
+            
+            .question-header {
+                flex-direction: column;
+                text-align: center;
+            }
+            
+            .answers-grid {
+                grid-template-columns: 1fr;
+            }
+            
+            .score-board {
+                justify-content: center;
+            }
+        }
+        
+        .floating-planet {
+            position: fixed;
+            pointer-events: none;
+            z-index: 2;
+            opacity: 0.3;
+            animation: float 10s infinite ease-in-out;
+        }
+        
+        @keyframes float {
+            0%, 100% { transform: translateY(0px) rotate(0deg); }
+            25% { transform: translateY(-20px) rotate(90deg); }
+            50% { transform: translateY(0px) rotate(180deg); }
+            75% { transform: translateY(-15px) rotate(270deg); }
+        }
+    </style>
+</head>
+<body>
+    <div class="stars" id="stars"></div>
+    
+    <div class="floating-planet" style="top: 10%; right: 10%; font-size: 3em;">🪐</div>
+    <div class="floating-planet" style="bottom: 15%; left: 15%; font-size: 2.5em; animation-delay: -3s;">🌍</div>
+    <div class="floating-planet" style="top: 60%; right: 20%; font-size: 2em; animation-delay: -6s;">🌕</div>
+    
+    <div class="container">
+        <div class="header">
+            <h1>🌌 חידון מערכת השמש</h1>
+            <p>בדוק את הידע שלך על כוכבי הלכת, השמש והחלל הרחב!</p>
+            
+            <div class="score-board">
+                <div class="score-item">
+                    <div class="score-value" id="current-score">0</div>
+                    <div class="score-label">ציון נוכחי</div>
+                </div>
+                <div class="score-item">
+                    <div class="score-value" id="best-score">0</div>
+                    <div class="score-label">שיא אישי</div>
+                </div>
+                <div class="score-item">
+                    <div class="score-value" id="total-questions">0</div>
+                    <div class="score-label">סך שאלות</div>
+                </div>
+            </div>
+        </div>
+        
+        <div class="quiz-container">
+            <!-- מסך התחלה -->
+            <div class="quiz-start" id="quiz-start">
+                <h2>🚀 ברוכים הבאים לחידון מערכת השמש!</h2>
+                <p>בחר רמת קושי כדי להתחיל:</p>
+                
+                <div class="difficulty-selector">
+                    <button class="difficulty-btn easy" onclick="startQuiz('easy')">
+                        🌕 קל<br>
+                        <small>10 שאלות בסיסיות</small>
+                    </button>
+                    <button class="difficulty-btn medium" onclick="startQuiz('medium')">
+                        🌍 בינוני<br>
+                        <small>15 שאלות מתקדמות</small>
+                    </button>
+                    <button class="difficulty-btn hard" onclick="startQuiz('hard')">
+                        🪐 קשה<br>
+                        <small>20 שאלות למומחים</small>
+                    </button>
+                </div>
+                
+                <div style="margin-top: 30px; padding: 20px; background: rgba(102,126,234,0.1); border-radius: 15px;">
+                    <h3>💡 טיפים לחידון:</h3>
+                    <ul style="text-align: right; margin: 15px 0;">
+                        <li>קרא כל שאלה בעמידה</li>
+                        <li>יש מגבלת זמן לכל שאלה</li>
+                        <li>תקבל הסבר לכל תשובה</li>
+                        <li>הציון הטוב ביותר שלך נשמר</li>
+                    </ul>
+                </div>
+            </div>
+            
+            <!-- מסך שאלות -->
+            <div class="question-container" id="question-container">
+                <div class="question-header">
+                    <div class="question-number" id="question-number">שאלה 1 מתוך 10</div>
+                    <div style="display: flex; gap: 10px; align-items: center;">
+                        <button class="exit-btn" onclick="exitQuiz()" title="צא מהחידון">❌ צא</button>
+                        <div class="timer" id="timer">⏰ 30</div>
+                    </div>
+                </div>
+                
+                <div class="progress-bar">
+                    <div class="progress-fill" id="progress-fill"></div>
+                </div>
+                
+                <div class="question-text" id="question-text"></div>
+                
+                <div class="answers-grid" id="answers-grid"></div>
+                
+                <div class="explanation" id="explanation">
+                    <h4>💡 הסבר:</h4>
+                    <p id="explanation-text"></p>
+                </div>
+                
+                <button class="next-btn" id="next-btn" onclick="nextQuestion()" style="display: none;">
+                    השאלה הבאה ➡️
+                </button>
+            </div>
+            
+            <!-- מסך סיום -->
+            <div class="quiz-end" id="quiz-end" style="display: none;">
+                <h2>🎉 כל הכבוד! סיימת את החידון!</h2>
+                
+                <div class="final-score-value" id="final-score">0%</div>
+                
+                <div class="performance-message" id="performance-message"></div>
+                
+                <div class="statistics">
+                    <div class="stat-item">
+                        <div class="score-value" id="correct-answers">0</div>
+                        <div class="score-label">תשובות נכונות</div>
+                    </div>
+                    <div class="stat-item">
+                        <div class="score-value" id="wrong-answers">0</div>
+                        <div class="score-label">תשובות שגויות</div>
+                    </div>
+                    <div class="stat-item">
+                        <div class="score-value" id="avg-time">0s</div>
+                        <div class="score-label">זמן ממוצע לשאלה</div>
+                    </div>
+                    <div class="stat-item">
+                        <div class="score-value" id="difficulty-completed">קל</div>
+                        <div class="score-label">רמת קושי</div>
+                    </div>
+                </div>
+                
+                <button class="restart-btn" onclick="restartQuiz()">
+                    🔄 חידון חדש
+                </button>
+            </div>
+        </div>
+    </div>
+
+    <script>
+        // משתנים גלובליים
+        let currentQuestionIndex = 0;
+        let currentScore = 0;
+        let totalQuestions = 0;
+        let difficulty = 'easy';
+        let timer;
+        let timeLeft = 30;
+        let questionStartTime = 0;
+        let totalTime = 0;
+        let correctAnswers = 0;
+        let wrongAnswers = 0;
+        
+        // בנק שאלות
+        const questionBank = {
+            easy: [
+                {
+                    question: "איזה כוכב לכת הוא הקרוב ביותר לשמש? ☀️",
+                    answers: ["כוכב חמה", "נוגה", "כדור הארץ", "מאדים"],
+                    correct: 0,
+                    explanation: "כוכב חמה הוא הכוכב הקרוב ביותר לשמש במרחק של 57.9 מיליון ק\"מ בממוצע."
+                },
+                {
+                    question: "כמה ירחים יש לכדור הארץ? 🌙",
+                    answers: ["אין", "1", "2", "3"],
+                    correct: 1,
+                    explanation: "לכדור הארץ יש ירח אחד בלבד, שנקרא פשוט 'הירח'."
+                },
+                {
+                    question: "איזה כוכב לכת ידוע בתור 'הכוכב האדום'? 🔴",
+                    answers: ["צדק", "מאדים", "נוגה", "נפטון"],
+                    correct: 1,
+                    explanation: "מאדים נקרא 'הכוכב האדום' בגלל צבעו האדמדם הנובע מתחמוצת הברזל על פני השטח."
+                },
+                {
+                    question: "איזה כוכב לכת הוא הגדול ביותר במערכת השמש? 🪐",
+                    answers: ["שבתאי", "צדק", "נפטון", "אורנוס"],
+                    correct: 1,
+                    explanation: "צדק הוא הכוכב הגדול ביותר במערכת השמש, עם קוטר של 139,820 ק\"מ."
+                },
+                {
+                    question: "איזה כוכב לכת ידוע בטבעות שלו? 💍",
+                    answers: ["צדק", "מאדים", "שבתאי", "נוגה"],
+                    correct: 2,
+                    explanation: "שבתאי ידוע בטבעות הבולטות שלו שמורכבות מקרח וחלקיקי סלע."
+                },
+                {
+                    question: "איזה כוכב לכת הוא החם ביותר במערכת השמש? 🔥",
+                    answers: ["כוכב חמה", "נוגה", "מאדים", "כדור הארץ"],
+                    correct: 1,
+                    explanation: "נוגה הוא הכוכב החם ביותר עם טמפרטורה של 464°C בגלל אפקט החממה הקיצוני."
+                },
+                {
+                    question: "כמה כוכבי לכת יש במערכת השמש? 🌍",
+                    answers: ["7", "8", "9", "10"],
+                    correct: 1,
+                    explanation: "יש 8 כוכבי לכת במערכת השמש מאז שפלוטו סווג מחדש ככוכב לכת ננסי ב-2006."
+                },
+                {
+                    question: "איזה כוכב לכת הקרוב ביותר בגודלו לכדור הארץ? 🌍",
+                    answers: ["מאדים", "נוגה", "כוכב חמה", "צדק"],
+                    correct: 1,
+                    explanation: "נוגה דומה בגודלה לכדור הארץ עם קוטר של 12,104 ק\"מ לעומת 12,742 ק\"מ של כדור הארץ."
+                },
+                {
+                    question: "איזה כוכב לכת הרחוק ביותר מהשמש? ❄️",
+                    answers: ["אורנוס", "נפטון", "שבתאי", "פלוטו"],
+                    correct: 1,
+                    explanation: "נפטון הוא הכוכב הרחוק ביותר במרחק של 4.495 מיליארד ק\"מ מהשמש."
+                },
+                {
+                    question: "איך קוראים לחגורת האסטרואידים? ☄️",
+                    answers: ["חגורת כויפר", "חגורת האסטרואידים", "ענן אורט", "החגורה הכחולה"],
+                    correct: 1,
+                    explanation: "חגורת האסטרואידים נמצאת בין מאדים לצדק ומכילה אלפי אסטרואידים."
+                }
+            ],
+            medium: [
+                {
+                    question: "כמה זמן לוקח לאור מהשמש להגיע לכדור הארץ? ⚡",
+                    answers: ["8 דקות", "8 דקות ו-20 שניות", "10 דקות", "5 דקות"],
+                    correct: 1,
+                    explanation: "אור נוסע במהירות של 300,000 ק\"מ לשנייה ולוקח לו 8 דקות ו-20 שניות להגיע מהשמש לכדור הארץ."
+                },
+                {
+                    question: "איזה כוכב לכת מסתובב על צידו? 🌀",
+                    answers: ["צדק", "שבתאי", "אורנוס", "נפטון"],
+                    correct: 2,
+                    explanation: "אורנוס מסתובב על צידו עם נטייה של 98 מעלות, כנראה בגלל התנגשות עתיקה."
+                },
+                {
+                    question: "איזה ירח הוא הגדול ביותר במערכת השמש? 🌙",
+                    answers: ["הירח (של כדור הארץ)", "טיטאן", "גנימד", "יורופה"],
+                    correct: 2,
+                    explanation: "גנימד, ירח של צדק, הוא הירח הגדול ביותר במערכת השמש - גדול יותר אפילו מכוכב חמה!"
+                },
+                {
+                    question: "כמה ימי ארץ נמשכת שנה על מאדים? 📅",
+                    answers: ["365 ימים", "687 ימים", "225 ימים", "780 ימים"],
+                    correct: 1,
+                    explanation: "שנה על מאדים נמשכת 687 ימי ארץ כי מאדים רחוק יותר מהשמש ונע לאט יותר במסלולו."
+                },
+                {
+                    question: "איזה כוכב לכת יש לו את הרוחות המהירות ביותר? 💨",
+                    answers: ["צדק", "שבתאי", "אורנוס", "נפטון"],
+                    correct: 3,
+                    explanation: "נפטון יש לו רוחות של עד 2,100 קמ\"ש - המהירות הגבוהה ביותר במערכת השמש!"
+                },
+                {
+                    question: "איזה כוכב לכת יש לו יום הקצר ביותר? ⏰",
+                    answers: ["כדור הארץ", "מאדים", "צדק", "שבתאי"],
+                    correct: 2,
+                    explanation: "צדק מסתובב הכי מהר סביב עצמו - יום אחד שם נמשך רק 9.9 שעות!"
+                },
+                {
+                    question: "איזה גז הוא העיקרי באטמוספירה של צדק? 🌬️",
+                    answers: ["חמצן", "מימן", "פחמן דו-חמצני", "מתאן"],
+                    correct: 1,
+                    explanation: "האטמוספירה של צדק מורכבת מ-89% מימן, 10% הליום ו-1% גזים אחרים."
+                },
+                {
+                    question: "איזה כוכב לכת יש לו את הצפיפות הנמוכה ביותר? 🪶",
+                    answers: ["צדק", "שבתאי", "אורנוס", "נפטון"],
+                    correct: 1,
+                    explanation: "שבתאי יש לו צפיפות נמוכה כל כך שהוא היה צף במים אם היה קיים אוקיינוס מספיק גדול!"
+                },
+                {
+                    question: "כמה ירחים יש לצדק? 🌙",
+                    answers: ["67", "79", "95", "82"],
+                    correct: 2,
+                    explanation: "לצדק יש 95 ירחים ידועים נכון לעכשיו, כולל 4 הירחים הגדולים שגילה גליליאו."
+                },
+                {
+                    question: "איזה כוכב לכת התגלה ראשון באמצעות חישובים מתמטיים? 🔭",
+                    answers: ["אורנוס", "נפטון", "פלוטו", "צדק"],
+                    correct: 1,
+                    explanation: "נפטון התגלה ב-1846 על ידי אורבן לה ורייה שחישב את מיקומו לפני שצפו בו בטלסקופ."
+                },
+                {
+                    question: "איזה כוכב לכת יש לו את הפעילות הוולקנית הפעילה ביותר? 🌋",
+                    answers: ["כדור הארץ", "מאדים", "איו (ירח של צדק)", "נוגה"],
+                    correct: 2,
+                    explanation: "איו, ירח של צדק, יש לו מאות הרי געש פעילים בגלל כוחות הגאות והשפל של צדק."
+                },
+                {
+                    question: "איזה כוכב לכת יש לו עונות שנה החזקות ביותר? ❄️🔥",
+                    answers: ["כדור הארץ", "מאדים", "אורנוס", "נפטון"],
+                    correct: 2,
+                    explanation: "אורנוס יש לו עונות קיצוניות כי הוא מוטה 98° - כל קוטב חשוף לשמש למשך 42 שנה!"
+                },
+                {
+                    question: "איזה כוכב לכת יכול לצוף במים? 🏊",
+                    answers: ["נוגה", "מאדים", "שבתאי", "אורנוס"],
+                    correct: 2,
+                    explanation: "שבתאי יש לו צפיפות נמוכה ממים (0.69 גרם/סמ\"ק) אז הוא היה צף!"
+                },
+                {
+                    question: "איזה כוכב לכת יש לו את ההר הגבוה ביותר במערכת השמש? ⛰️",
+                    answers: ["כדור הארץ", "מאדים", "נוגה", "צדק"],
+                    correct: 1,
+                    explanation: "אולימפוס מונס על מאדים הוא בגובה של 21 ק\"מ - פי 2.5 מהר האוורסט!"
+                },
+                {
+                    question: "איזה כוכב לכת נקרא 'כוכב הבוקר' או 'כוכב הערב'? ⭐",
+                    answers: ["כוכב חמה", "נוגה", "מאדים", "צדק"],
+                    correct: 1,
+                    explanation: "נוגה נראה כמו כוכב בהיר בשמיים ולכן קיבל את הכינויים 'כוכב הבוקר' ו'כוכב הערב'."
+                }
+            ],
+            hard: [
+                {
+                    question: "מהי האקסצנטריות של מסלול כוכב חמה? 📐",
+                    answers: ["0.007", "0.206", "0.017", "0.093"],
+                    correct: 1,
+                    explanation: "מסלול כוכב חמה הוא הכי אליפטי מבין כוכבי הלכת עם אקסצנטריות של 0.206."
+                },
+                {
+                    question: "כמה זמן לוקח לצדק להקיף את השמש? 🗓️",
+                    answers: ["11.9 שנים", "29.5 שנים", "84 שנים", "165 שנים"],
+                    correct: 0,
+                    explanation: "צדק לוקח 11.9 שנות ארץ להשלים מסלול אחד סביב השמש."
+                },
+                {
+                    question: "מהי הטמפרטורה בליבת השמש? 🔥",
+                    answers: ["5,500°C", "1 מיליון°C", "15 מיליון°C", "100 מיליון°C"],
+                    correct: 2,
+                    explanation: "הליבה של השמש מגיעה לטמפרטורה של כ-15 מיליון מעלות צלזיוס, שם מתרחש היתוך גרעיני."
+                },
+                {
+                    question: "איזה ירח במערכת השמש יש לו אטמוספירה צפופה יותר מכדור הארץ? 🌫️",
+                    answers: ["הירח", "טיטאן", "איו", "יורופה"],
+                    correct: 1,
+                    explanation: "טיטאן, ירח של שבתאי, יש לו אטמוספירה צפופה פי 1.5 מכדור הארץ, עשויה בעיקר מחנקן."
+                },
+                {
+                    question: "מהו הקוטר של השמש בק\"מ? ☀️",
+                    answers: ["1,391,400", "696,340", "1,200,000", "2,000,000"],
+                    correct: 0,
+                    explanation: "קוטר השמש הוא 1,391,400 ק\"מ - כ-109 פעמים גדול יותר מכדור הארץ."
+                },
+                {
+                    question: "איזה כוכב לכת יש לו את כוח המשיכה הגבוה ביותר? 💪",
+                    answers: ["כדור הארץ", "צדק", "השמש", "נפטון"],
+                    correct: 1,
+                    explanation: "צדק יש לו כוח משיכה פי 2.36 מכדור הארץ - הגבוה ביותר מכל כוכבי הלכת."
+                },
+                {
+                    question: "כמה אחוז ממסת מערכת השמש השמש מהווה? 📊",
+                    answers: ["95.8%", "99.86%", "98.5%", "97.2%"],
+                    correct: 1,
+                    explanation: "השמש מהווה 99.86% ממסת מערכת השמש כולה!"
+                },
+                {
+                    question: "מהו הגובה של אולימפוס מונס על מאדים? ⛰️",
+                    answers: ["15 ק\"מ", "18 ק\"מ", "21 ק\"מ", "24 ק\"מ"],
+                    correct: 2,
+                    explanation: "אולימפוס מונס גבוה 21 ק\"מ - ההר הגבוה ביותר הידוע במערכת השמש."
+                },
+                {
+                    question: "איזה ירח מסתובב בכיוון הפוך למסלול כוכב הלכת שלו? 🔄",
+                    answers: ["הירח", "פובוס", "טריטון", "טיטאן"],
+                    correct: 2,
+                    explanation: "טריטון, הירח הגדול של נפטון, מסתובב בכיוון הפוך (רטרוגרדי) למסלול נפטון."
+                },
+                {
+                    question: "מהו שמו של החלל בין מאדים לצדק? 🌌",
+                    answers: ["חגורת כויפר", "חגורת האסטרואידים", "ענן אורט", "החלל הביניים"],
+                    correct: 1,
+                    explanation: "בין מאדים לצדק נמצאת חגורת האסטרואידים עם אלפי גרמי שמיים קטנים."
+                },
+                {
+                    question: "כמה זמן אור נמצא אורנוס מהשמש? ⚡",
+                    answers: ["2.5 שעות", "2.7 שעות", "3.2 שעות", "4.1 שעות"],
+                    correct: 1,
+                    explanation: "אורנוס נמצא במרחק של כ-2.7 שעות אור מהשמש (2.871 מיליארד ק\"מ)."
+                },
+                {
+                    question: "איזה כוכב לכת יש לו את הירח הגדול ביותר ביחס לגודלו? 🌙",
+                    answers: ["כדור הארץ", "מאדים", "נפטון", "פלוטו"],
+                    correct: 0,
+                    explanation: "הירח של כדור הארץ הוא הכי גדול ביחס לכוכב הלכת שלו - כרבע מקוטר כדור הארץ."
+                },
+                {
+                    question: "מהי מהירות הסיבוב של השמש בקו המשווה? 🌀",
+                    answers: ["25 ימים", "27 ימים", "30 ימים", "35 ימים"],
+                    correct: 0,
+                    explanation: "השמש מסתובבת בקו המשווה כל 25 ימי ארץ, ובקטבים לוקח 35 ימים."
+                },
+                {
+                    question: "איזה גז נותן לאורנוס ונפטון את הצבע הכחול שלהם? 🔵",
+                    answers: ["חמצן", "מימן", "מתאן", "הליום"],
+                    correct: 2,
+                    explanation: "מתאן באטמוספירה סופג אור אדום ומחזיר אור כחול, נותן להם את הצבע הכחול."
+                },
+                {
+                    question: "כמה שנים לוקח לנפטון להקיף את השמש? 🗓️",
+                    answers: ["84 שנים", "120 שנים", "165 שנים", "200 שנים"],
+                    correct: 2,
+                    explanation: "נפטון לוקח 165 שנות ארץ להשלמת מסלול אחד - מאז שהתגלה ב-1846 הוא עדיין לא השלים מסלול שלם!"
+                },
+                {
+                    question: "מהו הרכב הליבה של צדק? 🪐",
+                    answers: ["ברזל ונקל", "מימן מטאלי", "סלע ומתכת", "כל התשובות נכונות"],
+                    correct: 3,
+                    explanation: "הליבה של צדק מורכבת מברזל, ניקל, סלע ומימן מטאלי תחת לחץ עצום."
+                },
+                {
+                    question: "איזה ירח יש לו אוקיינוסים תת-קרקעיים? 🌊",
+                    answers: ["יורופה", "אנקלדוס", "טיטאן", "כל התשובות נכונות"],
+                    correct: 3,
+                    explanation: "יורופה, אנקלדוס וטיטאן - כולם יש להם אוקיינוסים של מים נוזליים מתחת לקרח!"
+                },
+                {
+                    question: "מהו הקוטר של הכתם האדום הגדול של צדק? 🔴",
+                    answers: ["גדול מכדור הארץ", "גדול פי 2 מכדור הארץ", "גדול פי 3 מכדור הארץ", "קטן מכדור הארץ"],
+                    correct: 1,
+                    explanation: "הכתם האדום הגדול רחב כ-16,000 ק\"מ - גדול פי 1.3 מכדור הארץ!"
+                },
+                {
+                    question: "איזה כוכב לכת יש לו את המעלה הנמוכה ביותר? ❄️",
+                    answers: ["אורנוס", "נפטון", "פלוטו", "כולם שווים"],
+                    correct: 1,
+                    explanation: "נפטון מגיע לטמפרטורות של -218°C - הקר ביותר מכוכבי הלכת הידועים."
+                },
+                {
+                    question: "כמה חלקיקים יש בטבעות שבתאי? 💍",
+                    answers: ["מאות", "אלפים", "מיליונים", "מיליארדים"],
+                    correct: 3,
+                    explanation: "טבעות שבתאי מכילות מיליארדי חלקיקי קרח וסלע בגדלים שונים!"
+                }
+            ]
+        };
+        
+        // יצירת כוכבים ברקע
+        function createStars() {
+            const starsContainer = document.getElementById('stars');
+            for (let i = 0; i < 200; i++) {
+                const star = document.createElement('div');
+                star.className = 'star';
+                star.style.left = Math.random() * 100 + '%';
+                star.style.top = Math.random() * 100 + '%';
+                star.style.width = star.style.height = Math.random() * 3 + 'px';
+                star.style.animationDelay = Math.random() * 3 + 's';
+                starsContainer.appendChild(star);
+            }
+        }
+        
+        // התחלת חידון
+        function startQuiz(selectedDifficulty) {
+            difficulty = selectedDifficulty;
+            currentQuestionIndex = 0;
+            currentScore = 0;
+            correctAnswers = 0;
+            wrongAnswers = 0;
+            totalTime = 0;
+            
+            const questions = questionBank[difficulty];
+            totalQuestions = questions.length;
+            
+            document.getElementById('total-questions').textContent = totalQuestions;
+            document.getElementById('quiz-start').style.display = 'none';
+            document.getElementById('question-container').style.display = 'block';
+            
+            // אפס את תכולת המיכל
+            document.getElementById('answers-grid').innerHTML = '';
+            document.getElementById('explanation').style.display = 'none';
+            document.getElementById('next-btn').style.display = 'none';
+            
+            loadQuestion();
+        }
+        
+        // טעינת שאלה
+        function loadQuestion() {
+            const questions = questionBank[difficulty];
+            const question = questions[currentQuestionIndex];
+            
+            document.getElementById('question-number').textContent = 
+                `שאלה ${currentQuestionIndex + 1} מתוך ${totalQuestions}`;
+            document.getElementById('question-text').textContent = question.question;
+            
+            // עדכון פרוגרס בר
+            const progress = ((currentQuestionIndex) / totalQuestions) * 100;
+            document.getElementById('progress-fill').style.width = progress + '%';
+            
+            // יצירת תשובות
+            const answersGrid = document.getElementById('answers-grid');
+            answersGrid.innerHTML = '';
+            
+            question.answers.forEach((answer, index) => {
+                const button = document.createElement('button');
+                button.className = 'answer-btn';
+                button.textContent = answer;
+                button.onclick = () => selectAnswer(index, button);
+                answersGrid.appendChild(button);
+            });
+            
+            // התחלת טיימר
+            timeLeft = difficulty === 'easy' ? 30 : difficulty === 'medium' ? 25 : 20;
+            questionStartTime = Date.now();
+            startTimer();
+            
+            // הסתרת הסבר ולחצן הבא
+            document.getElementById('explanation').style.display = 'none';
+            document.getElementById('next-btn').style.display = 'none';
+        }
+        
+        // התחלת טיימר
+        function startTimer() {
+            const timerElement = document.getElementById('timer');
+            timer = setInterval(() => {
+                timerElement.textContent = `⏰ ${timeLeft}`;
+                timeLeft--;
+                
+                if (timeLeft < 0) {
+                    clearInterval(timer);
+                    timeUp();
+                }
+            }, 1000);
+        }
+        
+        // זמן נגמר
+        function timeUp() {
+            const answerButtons = document.querySelectorAll('.answer-btn');
+            answerButtons.forEach(btn => btn.disabled = true);
+            
+            const questions = questionBank[difficulty];
+            const question = questions[currentQuestionIndex];
+            
+            // סמן תשובה נכונה
+            answerButtons[question.correct].classList.add('correct');
+            
+            wrongAnswers++;
+            showExplanation(question.explanation);
+            document.getElementById('next-btn').style.display = 'block';
+        }
+        
+        // בחירת תשובה
+        function selectAnswer(selectedIndex, button) {
+            if (timer) clearInterval(timer);
+            
+            const questionTime = (Date.now() - questionStartTime) / 1000;
+            totalTime += questionTime;
+            
+            const questions = questionBank[difficulty];
+            const question = questions[currentQuestionIndex];
+            const answerButtons = document.querySelectorAll('.answer-btn');
+            
+            // השבת כל הכפתורים
+            answerButtons.forEach(btn => btn.disabled = true);
+            
+            // סמן תשובה שנבחרה
+            button.classList.add('selected');
+            
+            if (selectedIndex === question.correct) {
+                button.classList.add('correct');
+                currentScore += getQuestionScore();
+                correctAnswers++;
+            } else {
+                button.classList.add('incorrect');
+                answerButtons[question.correct].classList.add('correct');
+                wrongAnswers++;
+            }
+            
+            updateScore();
+            showExplanation(question.explanation);
+            document.getElementById('next-btn').style.display = 'block';
+        }
+        
+        // חישוב ציון שאלה
+        function getQuestionScore() {
+            const baseScore = difficulty === 'easy' ? 10 : difficulty === 'medium' ? 15 : 20;
+            const timeBonus = Math.max(0, timeLeft) * 2;
+            return baseScore + timeBonus;
+        }
+        
+        // הצגת הסבר
+        function showExplanation(explanationText) {
+            document.getElementById('explanation-text').textContent = explanationText;
+            document.getElementById('explanation').style.display = 'block';
+        }
+        
+        // שאלה הבאה
+        function nextQuestion() {
+            currentQuestionIndex++;
+            
+            if (currentQuestionIndex < totalQuestions) {
+                loadQuestion();
+            } else {
+                endQuiz();
+            }
+        }
+        
+        // סיום חידון
+        function endQuiz() {
+            document.getElementById('question-container').style.display = 'none';
+            document.getElementById('quiz-end').style.display = 'block';
+            
+            const percentage = Math.round((correctAnswers / totalQuestions) * 100);
+            const avgTime = (totalTime / totalQuestions).toFixed(1);
+            
+            document.getElementById('final-score').textContent = percentage + '%';
+            document.getElementById('correct-answers').textContent = correctAnswers;
+            document.getElementById('wrong-answers').textContent = wrongAnswers;
+            document.getElementById('avg-time').textContent = avgTime + 's';
+            document.getElementById('difficulty-completed').textContent = 
+                difficulty === 'easy' ? 'קל' : difficulty === 'medium' ? 'בינוני' : 'קשה';
+            
+            // הודעת ביצועים
+            const messageElement = document.getElementById('performance-message');
+            let message = '';
+            let className = '';
+            
+            if (percentage >= 90) {
+                message = '🏆 מדהים! אתה מומחה אמיתי למערכת השמש!';
+                className = 'excellent';
+            } else if (percentage >= 70) {
+                message = '👏 כל הכבוד! ידע טוב מאוד על מערכת השמש!';
+                className = 'good';
+            } else if (percentage >= 50) {
+                message = '👍 לא רע! עדיין יש מקום לשיפור.';
+                className = 'good';
+            } else {
+                message = '📚 כדאי ללמוד עוד על מערכת השמש. נסה שוב!';
+                className = 'needs-improvement';
+            }
+            
+            messageElement.textContent = message;
+            messageElement.className = 'performance-message ' + className;
+            
+            // עדכון שיא אישי
+            updateBestScore();
+        }
+        
+        // עדכון ציון
+        function updateScore() {
+            document.getElementById('current-score').textContent = currentScore;
+        }
+        
+        // משתנה לשיא אישי בזיכרון
+        let bestScore = 0;
+        
+        // עדכון שיא אישי
+        function updateBestScore() {
+            bestScore = Math.max(currentScore, bestScore);
+            document.getElementById('best-score').textContent = bestScore;
+        }
+        
+        // טעינת שיא אישי
+        function loadBestScore() {
+            document.getElementById('best-score').textContent = bestScore;
+        }
+        
+        // יציאה מהחידון
+        function exitQuiz() {
+            if (timer) clearInterval(timer);
+            
+            const confirmed = confirm('האם אתה בטוח שברצונך לצאת מהחידון? הציון הנוכחי לא יישמר.');
+            if (confirmed) {
+                document.getElementById('question-container').style.display = 'none';
+                document.getElementById('quiz-start').style.display = 'block';
+                currentScore = 0;
+                updateScore();
+            } else {
+                // המשך את הטיימר אם המשתמש בחר להישאר
+                startTimer();
+            }
+        }
+        
+        // איפוס חידון
+        function restartQuiz() {
+            document.getElementById('quiz-end').style.display = 'none';
+            document.getElementById('quiz-start').style.display = 'block';
+            currentScore = 0;
+            updateScore();
+        }
+        
+        // טעינה ראשונית
+        window.addEventListener('load', () => {
+            createStars();
+            loadBestScore();
+        });
+    </script>
+</body>
+</html>
