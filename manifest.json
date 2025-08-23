@@ -1,13 +1,16 @@
 {
   "name": "מערכת השמש - סימולציה תלת-ממדית",
   "short_name": "מערכת השמש",
-  "description": "סימולציה אינטראקטיבית תלת-ממדית של מערכת השמש עם מידע מפורט על כל כוכב לכת",
+  "description": "סימולציה אינטראקטיבית תלת-ממדית של מערכת השמש עם מידע מפורט על כל כוכב לכת וחידונים מאתגרים",
   "start_url": "/solarsystem3/",
   "display": "standalone",
   "background_color": "#000033",
   "theme_color": "#000033",
   "orientation": "any",
-  "categories": ["education", "science"],
+  "lang": "he",
+  "dir": "rtl",
+  "scope": "/solarsystem3/",
+  "categories": ["education", "science", "entertainment"],
   "icons": [
     {
       "src": "icon-192.png",
@@ -24,41 +27,102 @@
   ],
   "screenshots": [
     {
-      "src": "screenshot1.png",
+      "src": "screenshot-desktop-1.png",
       "sizes": "1280x720",
       "type": "image/png",
-      "label": "תצוגה ראשית של מערכת השמש"
+      "form_factor": "wide",
+      "label": "תצוגה ראשית של מערכת השמש - תלת מימד"
     },
     {
-      "src": "screenshot2.png",
+      "src": "screenshot-desktop-2.png", 
       "sizes": "1280x720",
       "type": "image/png",
-      "label": "מידע מפורט על כוכב לכת"
+      "form_factor": "wide",
+      "label": "מידע מפורט על כוכב לכת - חוויה אינטראקטיבית"
+    },
+    {
+      "src": "screenshot-mobile-1.png",
+      "sizes": "375x667",
+      "type": "image/png",
+      "form_factor": "narrow",
+      "label": "תצוגת מובייל - סימולציה תלת-ממדית"
+    },
+    {
+      "src": "screenshot-mobile-2.png",
+      "sizes": "375x667", 
+      "type": "image/png",
+      "form_factor": "narrow",
+      "label": "חידון אינטראקטיבי - טלפון נייד"
     }
   ],
   "share_target": {
-    "action": "/",
+    "action": "/solarsystem3/",
     "method": "GET",
     "params": {
       "title": "title",
-      "text": "text",
+      "text": "text", 
       "url": "url"
     }
   },
   "shortcuts": [
     {
-      "name": "השמש",
-      "short_name": "השמש",
-      "description": "מידע על השמש",
-      "url": "/?view=sun",
-      "icons": [{"src": "sun-icon.png", "sizes": "96x96"}]
+      "name": "סימולציה תלת-ממדית",
+      "short_name": "סימולציה",
+      "description": "פתח את הסימולציה התלת-ממדית של מערכת השמש",
+      "url": "/solarsystem3/solarsystem.html",
+      "icons": [
+        {
+          "src": "icon-192.png",
+          "sizes": "192x192"
+        }
+      ]
     },
     {
-      "name": "כדור הארץ",
-      "short_name": "כדור הארץ",
-      "description": "מידע על כדור הארץ",
-      "url": "/?view=earth",
-      "icons": [{"src": "earth-icon.png", "sizes": "96x96"}]
+      "name": "חידון מערכת השמש",
+      "short_name": "חידון",
+      "description": "התחל חידון אינטראקטיבי על מערכת השמש",
+      "url": "/solarsystem3/quiz.html",
+      "icons": [
+        {
+          "src": "icon-192.png", 
+          "sizes": "192x192"
+        }
+      ]
+    },
+    {
+      "name": "מחולל אייקונים",
+      "short_name": "אייקונים",
+      "description": "צור אייקונים מותאמים אישית",
+      "url": "/solarsystem3/pwa-icons-generator.html",
+      "icons": [
+        {
+          "src": "icon-192.png",
+          "sizes": "192x192"
+        }
+      ]
     }
-  ]
+  ],
+  "related_applications": [],
+  "prefer_related_applications": false,
+  "protocol_handlers": [
+    {
+      "protocol": "web+solarsystem",
+      "url": "/solarsystem3/?planet=%s"
+    }
+  ],
+  "file_handlers": [],
+  "launch_handler": {
+    "client_mode": "navigate-new"
+  },
+  "display_override": [
+    "window-controls-overlay",
+    "standalone",
+    "minimal-ui"
+  ],
+  "edge_side_panel": {
+    "preferred_width": 400
+  },
+  "handle_links": "preferred",
+  "id": "solarsystem3d-pwa",
+  "version": "2.0.0"
 }
