@@ -5,7 +5,14 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>🌌 מערכת השמש - דף הבית</title>
     <meta name="theme-color" content="#000033">
+    <meta name="apple-mobile-web-app-capable" content="yes">
+    <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
     <meta name="description" content="חקור את מערכת השמש עם סימולציה תלת-ממדית וחידונים אינטראקטיביים">
+    <link rel="manifest" href="manifest.json">
+    <link rel="icon" type="image/png" sizes="192x192" href="icon-192.png">
+    <link rel="icon" type="image/png" sizes="512x512" href="icon-512.png">
+    <link rel="apple-touch-icon" href="icon-192.png">
+    
     <style>
         * { margin: 0; padding: 0; box-sizing: border-box; }
         
@@ -346,6 +353,26 @@
             0%, 100% { opacity: 0; transform: scale(0); }
             50% { opacity: 1; transform: scale(1); }
         }
+        
+        /* PWA Install Button */
+        .install-button {
+            background: linear-gradient(135deg, #28a745 0%, #20c997 100%);
+            color: white;
+            border: none;
+            padding: 12px 25px;
+            border-radius: 25px;
+            cursor: pointer;
+            font-size: 1em;
+            margin: 20px auto;
+            display: none;
+            box-shadow: 0 4px 15px rgba(40, 167, 69, 0.3);
+            transition: all 0.3s;
+        }
+        
+        .install-button:hover {
+            transform: translateY(-2px) scale(1.05);
+            box-shadow: 0 8px 25px rgba(40, 167, 69, 0.5);
+        }
     </style>
 </head>
 <body>
@@ -376,12 +403,16 @@
                 <span class="planet">⛢</span>
                 <span class="planet">♆</span>
             </div>
+            
+            <button id="installButton" class="install-button">
+                📱 התקן כאפליקציה
+            </button>
         </header>
         
         <!-- תפריט ראשי -->
         <main class="main-menu">
             <!-- כרטיס סימולציה -->
-            <a href="index.html" target="_blank" class="menu-card simulation-card">
+            <a href="solarsystem.html" class="menu-card simulation-card">
                 <div class="card-icon">🌍</div>
                 <h2 class="card-title">סימולציה תלת-ממדית</h2>
                 <p class="card-description">חווה את מערכת השמש בתלת מימד עם גרפיקה מתקדמת ופיזיקה ריאליסטית</p>
@@ -399,7 +430,7 @@
             </a>
             
             <!-- כרטיס חידון -->
-            <a href="quiz.html" target="_blank" class="menu-card quiz-card">
+            <a href="quiz.html" class="menu-card quiz-card">
                 <div class="card-icon">🧠</div>
                 <h2 class="card-title">חידון אינטראקטיבי</h2>
                 <p class="card-description">בדוק את הידע שלך על מערכת השמש עם שאלות מאתגרות ברמות קושי שונות</p>
@@ -454,8 +485,9 @@
             <p style="color: #b8b8ff; margin-bottom: 20px;">גלה את הסודות של מערכת השמש והפוך למומחה חלל</p>
             
             <div class="footer-links">
-                <a href="index.html" target="_blank" class="footer-link">🌍 סימולציה</a>
-                <a href="quiz.html" target="_blank" class="footer-link">🧠 חידון</a>
+                <a href="solarsystem.html" class="footer-link">🌍 סימולציה</a>
+                <a href="quiz.html" class="footer-link">🧠 חידון</a>
+                <a href="pwa-icons-generator.html" class="footer-link">🎨 מחולל אייקונים</a>
                 <a href="#" class="footer-link" onclick="showInfo()">ℹ️ אודות</a>
                 <a href="#" class="footer-link" onclick="showHelp()">❓ עזרה</a>
             </div>
@@ -467,24 +499,51 @@
     </div>
 
     <script>
-        // מניעת שגיאות localStorage
-        try {
-            if (typeof Storage === 'undefined' || !window.localStorage) {
-                window.localStorage = {
-                    getItem: () => null,
-                    setItem: () => {},
-                    removeItem: () => {},
-                    clear: () => {}
-                };
+        // PWA Installation
+        let deferredPrompt;
+        const installButton = document.getElementById('installButton');
+        
+        window.addEventListener('beforeinstallprompt', (e) => {
+            e.preventDefault();
+            deferredPrompt = e;
+            installButton.style.display = 'block';
+        });
+        
+        installButton.addEventListener('click', async () => {
+            if (deferredPrompt) {
+                deferredPrompt.prompt();
+                const { outcome } = await deferredPrompt.userChoice;
+                console.log(`User response: ${outcome}`);
+                deferredPrompt = null;
+                installButton.style.display = 'none';
             }
-        } catch (e) {
-            // במקרה של כשל, ניצור localStorage מדומה
-            window.localStorage = {
-                getItem: () => null,
-                setItem: () => {},
-                removeItem: () => {},
-                clear: () => {}
-            };
+        });
+        
+        // Service Worker Registration
+        if ('serviceWorker' in navigator) {
+            window.addEventListener('load', () => {
+                navigator.serviceWorker.register('sw.js')
+                    .then(registration => {
+                        console.log('ServiceWorker registration successful');
+                        
+                        // Check for updates
+                        registration.addEventListener('updatefound', () => {
+                            const newWorker = registration.installing;
+                            newWorker.addEventListener('statechange', () => {
+                                if (newWorker.state === 'installed' && navigator.serviceWorker.controller) {
+                                    // Show update available message
+                                    if (confirm('עדכון חדש זמין! האם תרצה לטעון אותו?')) {
+                                        newWorker.postMessage({type: 'SKIP_WAITING'});
+                                        window.location.reload();
+                                    }
+                                }
+                            });
+                        });
+                    })
+                    .catch(err => {
+                        console.log('ServiceWorker registration failed: ', err);
+                    });
+            });
         }
         
         // יצירת כוכבים ברקע
@@ -504,7 +563,6 @@
         
         // יצירת אפקטי נצנוץ
         function createSparkles() {
-            const container = document.querySelector('.container');
             setInterval(() => {
                 const sparkle = document.createElement('div');
                 sparkle.className = 'sparkle';
@@ -519,45 +577,6 @@
             }, 3000);
         }
         
-        // פתיחת סימולציה
-        function openSimulation() {
-            showModal('סימולציה תלת-ממדית', `
-                <div style="text-align: center;">
-                    <h3 style="color: #667eea; margin-bottom: 20px;">🌌 סימולציה מתקדמת</h3>
-                    <p style="font-size: 1.2em; margin-bottom: 20px;">הסימולציה התלת-ממדית מוכנה לשימוש!</p>
-                    
-                    <div style="text-align: right; margin: 20px 0; padding: 20px; background: rgba(102,126,234,0.1); border-radius: 10px; border: 1px solid rgba(102,126,234,0.3);">
-                        <h4 style="color: #f093fb; margin-bottom: 15px;">מה תמצא בסימולציה:</h4>
-                        <p>🪐 כל כוכבי הלכת במערכת השמש<br>
-                        🌙 95+ ירחים מפורטים<br>
-                        ☄️ חגורת אסטרואידים עם 500 גרמי שמיים<br>
-                        🔭 מידע מדעי מדויק על כל אובייקט<br>
-                        🎮 בקרות אינטראקטיביות מתקדמות<br>
-                        📱 תואם לכל המכשירים</p>
-                    </div>
-                    
-                    <p style="color: #b8b8ff; margin: 15px 0;">השתמש בעכבר או במגע כדי לנווט במרחב</p>
-                    
-                    <button onclick="this.closest('div').parentElement.remove(); alert('השתמש בקובץ index.html למערכת השמש המלאה!');" style="
-                        background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
-                        color: white;
-                        border: none;
-                        padding: 12px 25px;
-                        border-radius: 10px;
-                        cursor: pointer;
-                        font-size: 1.1em;
-                        margin-top: 15px;
-                        box-shadow: 0 4px 15px rgba(102,126,234,0.3);
-                    ">🚀 התחל לחקור</button>
-                </div>
-            `);
-        }
-        
-        // פתיחת חידון
-        function openQuiz() {
-            openQuizWindow();
-        }
-        
         // הצגת מידע
         function showInfo() {
             showModal('אודות המיזם', `
@@ -569,7 +588,7 @@
                     <p>• תלמידים וסטודנטים<br>• מורים ומחנכים<br>• חובבי חלל מכל הגילאים<br>• כל סקרן שרוצה ללמוד</p>
                     
                     <h3 style="color: #667eea; margin: 20px 0 10px;">⭐ תכונות מיוחדות</h3>
-                    <p>• מידע מדעי מדויק ועדכני<br>• ממשק בעברית<br>• חוויה חזותית מרהיבה<br>• נגישות מכל מכשיר</p>
+                    <p>• מידע מדעי מדויק ועדכני<br>• ממשק בעברית<br>• חוויה חזותית מרהיבה<br>• נגישות מכל מכשיר<br>• עבודה במצב לא מקוון</p>
                 </div>
             `);
         }
@@ -585,6 +604,9 @@
                     
                     <h4 style="color: #f093fb; margin: 15px 0 10px;">חידון:</h4>
                     <p>• בחר רמת קושי<br>• ענה על השאלות בזמן הנקוב<br>• קבל הסברים מפורטים<br>• עקוב אחר הציונים שלך</p>
+                    
+                    <h4 style="color: #f093fb; margin: 15px 0 10px;">התקנה כאפליקציה:</h4>
+                    <p>• לחץ על כפתור "התקן כאפליקציה"<br>• האפליקציה תעבוד גם במצב לא מקוון<br>• תקבל התראות על עדכונים חדשים</p>
                     
                     <h4 style="color: #f093fb; margin: 15px 0 10px;">טיפים:</h4>
                     <p>• השתמש במצב מסך מלא לחוויה מיטבית<br>• נסה רמות קושי שונות בחידון<br>• חקור כל כוכב לכת לפרטים נוספים</p>
@@ -663,40 +685,6 @@
             });
         }
         
-        // פתיחת החידון בחלון חדש
-        function openQuizWindow() {
-            showModal('חידון מערכת השמש', `
-                <div style="text-align: center;">
-                    <h3 style="color: #667eea; margin-bottom: 20px;">🧠 חידון אינטראקטיבי</h3>
-                    <p style="font-size: 1.2em; margin-bottom: 20px;">החידון מוכן לשימוש!</p>
-                    
-                    <div style="text-align: right; margin: 20px 0; padding: 20px; background: rgba(240,147,251,0.1); border-radius: 10px; border: 1px solid rgba(240,147,251,0.3);">
-                        <h4 style="color: #f093fb; margin-bottom: 15px;">מה כולל החידון:</h4>
-                        <p>🎯 45 שאלות מגוונות ומעניינות<br>
-                        📊 3 רמות קושי: קל, בינוני, קשה<br>
-                        ⏰ טיימר מאתגר לכל שאלה<br>
-                        💡 הסברים מפורטים לכל תשובה<br>
-                        🏆 מערכת ציונים מתקדמת<br>
-                        📈 מעקב אחר הישגים אישיים</p>
-                    </div>
-                    
-                    <p style="color: #b8b8ff; margin: 15px 0;">בחר רמת קושי והתחל לבדוק את הידע שלך!</p>
-                    
-                    <button onclick="this.closest('div').parentElement.remove(); alert('השתמש בקובץ החידון הנפרד!');" style="
-                        background: linear-gradient(135deg, #f093fb 0%, #f5576c 100%);
-                        color: white;
-                        border: none;
-                        padding: 12px 25px;
-                        border-radius: 10px;
-                        cursor: pointer;
-                        font-size: 1.1em;
-                        margin-top: 15px;
-                        box-shadow: 0 4px 15px rgba(240,147,251,0.3);
-                    ">🎮 התחל לשחק</button>
-                </div>
-            `);
-        }
-        
         // טעינה ראשונית
         window.addEventListener('load', () => {
             try {
@@ -715,7 +703,7 @@
             }
         });
         
-        // מניעת שגיאות localStorage
+        // מניעת שגיאות
         window.addEventListener('error', (e) => {
             if (e.message && e.message.includes('localStorage')) {
                 e.preventDefault();
