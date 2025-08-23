@@ -46,15 +46,61 @@
         }
         
         .header {
-            text-align: center;
-            margin-bottom: 40px;
-            background: linear-gradient(135deg, rgba(0,0,0,0.8) 0%, rgba(10,10,46,0.6) 100%);
-            padding: 30px;
-            border-radius: 20px;
-            backdrop-filter: blur(20px);
-            border: 1px solid rgba(100,100,255,0.3);
-            box-shadow: 0 8px 32px rgba(0,0,0,0.5);
-        }
+    text-align: center;
+    margin-bottom: 40px;
+    background: linear-gradient(135deg, rgba(0,0,0,0.8) 0%, rgba(10,10,46,0.6) 100%);
+    padding: 30px;
+    border-radius: 20px;
+    backdrop-filter: blur(20px);
+    border: 1px solid rgba(100,100,255,0.3);
+    box-shadow: 0 8px 32px rgba(0,0,0,0.5);
+    position: relative;
+}
+
+.navigation-buttons {
+    position: absolute;
+    top: 15px;
+    left: 15px;
+    display: flex;
+    gap: 10px;
+    z-index: 10;
+}
+
+.nav-btn {
+    background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+    color: white;
+    border: none;
+    padding: 8px 15px;
+    border-radius: 20px;
+    cursor: pointer;
+    font-size: 12px;
+    transition: all 0.3s;
+    box-shadow: 0 4px 15px rgba(102,126,234,0.3);
+    white-space: nowrap;
+}
+
+.nav-btn:hover {
+    transform: translateY(-2px) scale(1.05);
+    box-shadow: 0 8px 25px rgba(102,126,234,0.5);
+}
+
+.home-btn {
+    background: linear-gradient(135deg, #28a745 0%, #20c997 100%);
+    box-shadow: 0 4px 15px rgba(40, 167, 69, 0.3);
+}
+
+.home-btn:hover {
+    box-shadow: 0 8px 25px rgba(40, 167, 69, 0.5);
+}
+
+.simulation-btn {
+    background: linear-gradient(135deg, #6f42c1 0%, #e83e8c 100%);
+    box-shadow: 0 4px 15px rgba(111, 66, 193, 0.3);
+}
+
+.simulation-btn:hover {
+    box-shadow: 0 8px 25px rgba(111, 66, 193, 0.5);
+}
         
         .header h1 {
             font-size: 2.5em;
@@ -324,6 +370,19 @@
             .container {
                 padding: 10px;
             }
+
+.navigation-buttons {
+    position: relative;
+    top: auto;
+    left: auto;
+    justify-content: center;
+    margin-bottom: 20px;
+}
+
+.nav-btn {
+    font-size: 11px;
+    padding: 8px 12px;
+}
             
             .header h1 {
                 font-size: 2em;
@@ -372,7 +431,12 @@
     
     <div class="container">
         <div class="header">
-            <h1>🌌 חידון מערכת השמש</h1>
+    <div class="navigation-buttons">
+        <button onclick="goToHome()" class="nav-btn home-btn">🏠 דף הבית</button>
+        <button onclick="goToSimulation()" class="nav-btn simulation-btn">🌍 סימולציה</button>
+    </div>
+    
+    <h1>🌌 חידון מערכת השמש</h1>
             <p>בדוק את הידע שלך על כוכבי הלכת, השמש והחלל הרחב!</p>
             
             <div class="score-board">
@@ -1026,6 +1090,15 @@
             createStars();
             loadBestScore();
         });
+
+// פונקציות ניווט
+function goToHome() {
+    window.location.href = 'index.html';
+}
+
+function goToSimulation() {
+    window.location.href = 'solarsystem.html';
+}
     </script>
 </body>
 </html>
