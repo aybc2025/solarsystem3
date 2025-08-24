@@ -83,6 +83,51 @@
             -webkit-text-fill-color: transparent;
             text-shadow: 0 0 30px rgba(102,126,234,0.5);
         }
+
+.navigation-section {
+    display: flex;
+    gap: 8px;
+    margin-bottom: 15px;
+    flex-wrap: wrap;
+}
+
+.nav-btn {
+    background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+    color: white;
+    border: none;
+    padding: 6px 12px;
+    border-radius: 15px;
+    cursor: pointer;
+    font-size: 11px;
+    transition: all 0.3s;
+    box-shadow: 0 3px 12px rgba(102,126,234,0.3);
+    white-space: nowrap;
+    flex: 1;
+    min-width: 80px;
+}
+
+.nav-btn:hover {
+    transform: translateY(-2px) scale(1.05);
+    box-shadow: 0 6px 20px rgba(102,126,234,0.5);
+}
+
+.home-btn {
+    background: linear-gradient(135deg, #28a745 0%, #20c997 100%);
+    box-shadow: 0 3px 12px rgba(40, 167, 69, 0.3);
+}
+
+.home-btn:hover {
+    box-shadow: 0 6px 20px rgba(40, 167, 69, 0.5);
+}
+
+.quiz-btn {
+    background: linear-gradient(135deg, #dc3545 0%, #fd7e14 100%);
+    box-shadow: 0 3px 12px rgba(220, 53, 69, 0.3);
+}
+
+.quiz-btn:hover {
+    box-shadow: 0 6px 20px rgba(220, 53, 69, 0.5);
+
         
         .control-group {
             margin: 12px 0;
@@ -303,6 +348,16 @@
                 max-width: 280px;
                 font-size: 12px;
             }
+
+.navigation-section {
+    gap: 5px;
+}
+
+.nav-btn {
+    font-size: 10px;
+    padding: 5px 8px;
+    min-width: 70px;
+}
             
             #menu-toggle {
                 display: block;
@@ -346,7 +401,13 @@
     <div id="canvas-container"></div>
     
     <div id="controls">
-        <button id="menu-toggle">☰</button>
+    <button id="menu-toggle">☰</button>
+    
+    <div class="navigation-section">
+        <button onclick="goToHome()" class="nav-btn home-btn">🏠 דף הבית</button>
+        <button onclick="goToQuiz()" class="nav-btn quiz-btn">🧠 חידון</button>
+    </div>
+    
         <h1>🌌 מערכת השמש</h1>
         
         <div class="control-group ruler-group">
@@ -1775,6 +1836,14 @@ function createGenericTexture(ctx, size, color) {
                 document.getElementById('touch-controls').style.display = 'none';
             });
         }
+// Navigation functions
+function goToHome() {
+    window.location.href = 'index.html';
+}
+
+function goToQuiz() {
+    window.location.href = 'quiz.html';
+}
     </script>
 </body>
 </html>
